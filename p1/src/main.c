@@ -1,49 +1,54 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
-#include <signal.h>
-#include <errno.h>
-static void print_menu(void) {
-  printf("Dostępne komendy:\n");
-  printf("  add <source> <target...>\n");
-  printf("  end <source> <target...>\n");
-  printf("  list\n");
-  printf("  restore <source> <target>\n");
-  printf("  exit\n");
-}
-static volatile sig_atomic_t running = 1;
-static void handle_signal(int sig) {
-  (void)sig;
-  running = 0;
-}
+#include <stdlib.h>
+#include "parser.h"
+#include "core.h"
+#include "restore.h"
+#include "signals.h"
+#include "types.h"
+
 int main() {
+  setup_signals();
+  init_core();
 
-  print_menu();
-  while (running) {
+  char input[1024];
+  char *args[MAX_ARGS];
+  int argc;
+
+  printf("---sop-backup---\n");
+  printf("Dostepne komendy: add, list, end, restore, exit\n");
+
+  while (1) {
     printf("> ");
-    fflush(stdout);
+    if (!fgets(input, sizeof(input), stdin)) break;
 
-    ssize_t n = getline(&line, &len, stdin);
+    parse_input(input, args, &argc);
+    if (argc == 0) continue;
 
-    /* EOF (Ctrl+D) */
-    if (n == -1) {
+    if (strcmp(args[0], "exit") == 0) {
+      cleanup_all_processes();
       break;
     }
-
-    /* usuń '\n' */
-    if (n > 0 && line[n - 1] == '\n') {
-      line[n - 1] = '\0';
+    else if (strcmp(args[0], "add") == 0) {
+      handle_add(argc, args);
     }
-
-    /* exit kończy program */
-    if (strcmp(line, "exit") == 0) {
-      break;
+    else if (strcmp(args[0], "list") == 0) {
+      handle_list();
     }
-
-    /* na razie: tylko echo */
-    printf("Wpisano: \"%s\"\n", line);
+    else if (strcmp(args[0], "end") == 0) {
+      handle_end(argc, args);
+    }
+    else if (strcmp(args[0], "restore") == 0) {
+      if (argc < 2) {
+        printf("Błąd: Podaj ścieżkę kopii do przywrócenia.\n");
+      } else {
+        handle_restore(args[1]);
+      }
+    }
+    else {
+      printf("Nie ma takiej komendy.\n");
+    }
   }
-  free(line);
-  printf("Koniec programu.\n");
-return 0;
+
+  return 0;
 }
