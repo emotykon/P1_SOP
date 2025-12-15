@@ -47,13 +47,9 @@ char* get_path_by_wd(int wd) {
 }
 
 void run_backup_monitor(const char *src_root, const char *dst_root) {
-    // Resetuj sygnał w dziecku, aby nie reagowało na Ctrl+C terminala w ten sam sposób co rodzic
-    signal(SIGINT, SIG_IGN); 
-
-    // 1. Kopia początkowa
+    signal(SIGINT, SIG_IGN);
     copy_recursive(src_root, dst_root, src_root, dst_root, 0);
 
-    // 2. Init Inotify
     int fd = inotify_init();
     if (fd < 0) exit(1);
 
@@ -73,7 +69,6 @@ void run_backup_monitor(const char *src_root, const char *dst_root) {
                     char full_src[PATH_MAX], full_dst[PATH_MAX];
                     snprintf(full_src, sizeof(full_src), "%s/%s", src_dir, event->name);
 
-                    // Oblicz ścieżkę relatywną
                     char relative[PATH_MAX];
                     if (strlen(src_dir) == strlen(src_root)) {
                          snprintf(relative, sizeof(relative), "/%s", event->name);

@@ -31,14 +31,14 @@ void copy_file(const char *src, const char *dst, int update_only) {
 
     if (update_only && lstat(dst, &dst_stat) == 0) {
         if (src_stat.st_size == dst_stat.st_size && src_stat.st_mtime == dst_stat.st_mtime) {
-            return; // Brak zmian
+            return;
         }
     }
 
     int in = open(src, O_RDONLY);
     if (in < 0) return;
     
-    unlink(dst); // Usuń stary
+    unlink(dst);
 
     int out = open(dst, O_WRONLY | O_CREAT | O_TRUNC, src_stat.st_mode);
     if (out < 0) {
@@ -62,7 +62,6 @@ void copy_file(const char *src, const char *dst, int update_only) {
 }
 
 char* resolve_symlink_target(const char *src_path, const char *link_content, const char *root_src, const char *root_dst) {
-    // Jeśli link jest absolutny i wskazuje wewnątrz root_src
     if (strncmp(link_content, root_src, strlen(root_src)) == 0) {
         char *new_target = malloc(PATH_MAX);
         snprintf(new_target, PATH_MAX, "%s%s", root_dst, link_content + strlen(root_src));
@@ -76,12 +75,9 @@ void copy_symlink(const char *src, const char *dst, const char *root_src, const 
     ssize_t len = readlink(src, link_target, sizeof(link_target) - 1);
     if (len == -1) return;
     link_target[len] = '\0';
-
     char *final_target = resolve_symlink_target(src, link_target, root_src, root_dst);
-    
     unlink(dst);
     symlink(final_target, dst);
-    
     if (final_target != link_target) free(final_target);
 }
 

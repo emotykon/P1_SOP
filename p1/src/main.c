@@ -16,7 +16,7 @@ int main() {
   int argc;
 
   printf("---sop-backup---\n");
-  printf("Dostepne komendy: add, list, end, restore, exit\n");
+  printf("Available commands: add, list, end, restore, exit\n");
 
   while (1) {
     printf("> ");
@@ -40,13 +40,13 @@ int main() {
     }
     else if (strcmp(args[0], "restore") == 0) {
       if (argc < 2) {
-        printf("Błąd: Podaj ścieżkę kopii do przywrócenia.\n");
+        printf("Error: Invalid path.\n");
       } else {
         handle_restore(args[1]);
       }
     }
     else {
-      printf("Nie ma takiej komendy.\n");
+      printf("Unknown command.\n");
     }
   }
 
