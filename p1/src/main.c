@@ -1,7 +1,6 @@
 #define _DEFAULT_SOURCE
 #include "core.h"
 #include "parser.h"
-#include "restore.h"
 #include "signals.h"
 #include "types.h"
 #include <stdio.h>
@@ -15,7 +14,7 @@ int main() {
   int argc;
 
   printf("---sop-backup---\n");
-  printf("Available commands: add, list, end, restore, exit\n");
+  printf("Available commands: add, list, end, exit, NO restore\n");
 
   while (1) {
     char input[1024];
@@ -37,12 +36,6 @@ int main() {
       handle_list();
     } else if (strcmp(args[0], "end") == 0) {
       handle_end(argc, args);
-    } else if (strcmp(args[0], "restore") == 0) {
-      if (argc < 2) {
-        printf("Error: Invalid path.\n");
-      } else {
-        handle_restore(args[1]);
-      }
     } else {
       printf("Unknown command.\n");
     }

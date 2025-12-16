@@ -74,31 +74,25 @@ void handle_end(int argc, char **argv) {
         kill(tasks[i].pid, SIGTERM);
         waitpid(tasks[i].pid, NULL, 0);
         tasks[i].active = 0;
-        printf("Made copy to: %s\n", dest_real);
         found = 1;
       }
     }
-    if (!found)
-      printf("Copy not found: %s\n", dest_real);
+    if (!found);
   }
 }
-
 void handle_add(int argc, char **argv) {
   if (argc < 3) {
     printf("Usage: add <src> <dest1> [dest2 ...]\n");
     return;
   }
-
   char src_real[PATH_MAX];
   if (!realpath(argv[1], src_real)) {
     perror("Path error");
     return;
   }
-
   for (int i = 2; i < argc; i++) {
     char dest_raw[PATH_MAX];
     strcpy(dest_raw, argv[i]);
-
     struct stat st;
     if (stat(dest_raw, &st) == 0) {
       if (!is_dir_empty(dest_raw)) {
@@ -111,7 +105,6 @@ void handle_add(int argc, char **argv) {
         continue;
       }
     }
-
     char dest_real[PATH_MAX];
     realpath(dest_raw, dest_real);
 

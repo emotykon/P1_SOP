@@ -31,32 +31,26 @@ void copy_file(const char *src, const char *dst, int update_only) {
   struct stat src_stat, dst_stat;
   if (lstat(src, &src_stat) == -1)
     return;
-
   if (update_only && lstat(dst, &dst_stat) == 0) {
     if (src_stat.st_size == dst_stat.st_size &&
         src_stat.st_mtime == dst_stat.st_mtime) {
       return;
     }
   }
-
   int in = open(src, O_RDONLY);
   if (in < 0)
     return;
-
   unlink(dst);
-
   int out = open(dst, O_WRONLY | O_CREAT | O_TRUNC, src_stat.st_mode);
   if (out < 0) {
     close(in);
     return;
   }
-
   char buf[8192];
   ssize_t n;
   while ((n = read(in, buf, sizeof(buf))) > 0) {
     write(out, buf, n);
   }
-
   struct timespec times[2];
   times[0] = src_stat.st_atim;
   times[1] = src_stat.st_mtim;
@@ -76,7 +70,6 @@ char *resolve_symlink_target(const char *src_path, const char *link_content,
   }
   return (char *)link_content;
 }
-
 void copy_symlink(const char *src, const char *dst, const char *root_src,
                   const char *root_dst) {
   char link_target[PATH_MAX];
@@ -91,13 +84,11 @@ void copy_symlink(const char *src, const char *dst, const char *root_src,
   if (final_target != link_target)
     free(final_target);
 }
-
 void copy_recursive(const char *src, const char *dst, const char *root_src,
                     const char *root_dst, int update_only) {
   struct stat st;
   if (lstat(src, &st) == -1)
     return;
-
   if (S_ISDIR(st.st_mode)) {
     mkdir(dst, st.st_mode);
     DIR *d = opendir(src);
@@ -126,7 +117,6 @@ void delete_recursive(const char *path) {
   struct stat st;
   if (lstat(path, &st) == -1)
     return;
-
   if (S_ISDIR(st.st_mode)) {
     DIR *d = opendir(path);
     if (d) {
