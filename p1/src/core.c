@@ -77,7 +77,8 @@ void handle_end(int argc, char **argv) {
         found = 1;
       }
     }
-    if (!found);
+    if (!found)
+      printf("Copy not found\n");
   }
 }
 void handle_add(int argc, char **argv) {
