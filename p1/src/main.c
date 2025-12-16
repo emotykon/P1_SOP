@@ -1,51 +1,49 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include "parser.h"
+#define _DEFAULT_SOURCE
 #include "core.h"
+#include "parser.h"
 #include "restore.h"
 #include "signals.h"
 #include "types.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 int main() {
   setup_signals();
   init_core();
 
-  char input[1024];
-  char *args[MAX_ARGS];
   int argc;
 
   printf("---sop-backup---\n");
   printf("Available commands: add, list, end, restore, exit\n");
 
   while (1) {
+    char input[1024];
+    char *args[MAX_ARGS];
     printf("> ");
-    if (!fgets(input, sizeof(input), stdin)) break;
+    if (!fgets(input, sizeof(input), stdin))
+      break;
 
     parse_input(input, args, &argc);
-    if (argc == 0) continue;
+    if (argc == 0)
+      continue;
 
     if (strcmp(args[0], "exit") == 0) {
       cleanup_all_processes();
       break;
-    }
-    else if (strcmp(args[0], "add") == 0) {
+    } else if (strcmp(args[0], "add") == 0) {
       handle_add(argc, args);
-    }
-    else if (strcmp(args[0], "list") == 0) {
+    } else if (strcmp(args[0], "list") == 0) {
       handle_list();
-    }
-    else if (strcmp(args[0], "end") == 0) {
+    } else if (strcmp(args[0], "end") == 0) {
       handle_end(argc, args);
-    }
-    else if (strcmp(args[0], "restore") == 0) {
+    } else if (strcmp(args[0], "restore") == 0) {
       if (argc < 2) {
         printf("Error: Invalid path.\n");
       } else {
         handle_restore(args[1]);
       }
-    }
-    else {
+    } else {
       printf("Unknown command.\n");
     }
   }

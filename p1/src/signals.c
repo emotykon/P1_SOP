@@ -1,7 +1,8 @@
-#include <signal.h>
-#include <stdlib.h>
+#define _DEFAULT_SOURCE
 #include "signals.h"
 #include "core.h"
+#include <signal.h>
+#include <stdlib.h>
 
 void handle_sigint(int sig) {
   cleanup_all_processes();

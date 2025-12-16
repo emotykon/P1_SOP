@@ -1,16 +1,20 @@
-#include <string.h>
+#define _DEFAULT_SOURCE
 #include "parser.h"
 #include "types.h"
+#include <string.h>
 
 void parse_input(char *input, char **args, int *arg_count) {
   *arg_count = 0;
   char *ptr = input;
 
-  if (ptr[strlen(ptr)-1] == '\n') ptr[strlen(ptr)-1] = '\0';
+  if (ptr[strlen(ptr) - 1] == '\n')
+    ptr[strlen(ptr) - 1] = '\0';
 
   while (*ptr && *arg_count < MAX_ARGS) {
-    while (*ptr == ' ') ptr++;
-    if (*ptr == '\0') break;
+    while (*ptr == ' ')
+      ptr++;
+    if (*ptr == '\0')
+      break;
 
     if (*ptr == '"') {
       ptr++;

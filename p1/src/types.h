@@ -1,8 +1,8 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-#include <sys/types.h>
 #include <limits.h>
+#include <sys/types.h>
 
 #define MAX_ARGS 10
 #define MAX_BACKUPS 100
@@ -14,7 +14,7 @@ typedef struct {
   int active;
 } BackupTask;
 
-typedef struct WatchMap{
+typedef struct WatchMap {
   int wd;
   char path[PATH_MAX];
   struct WatchMap *next;
